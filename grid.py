@@ -7,7 +7,7 @@ import numpy as np
 import numpy as np
 from pathlib import Path
 
-p=Path('/Users/s1955786/Desktop/penguins/')
+p=Path('/path/to/images/')
 
 for file in p.iterdir():
     if file.suffix==".png":
@@ -32,7 +32,7 @@ for file in p.iterdir():
             y_start = j*grid_width + y_list[j]
             new_image_arr[x_start:x_start+dx, y_start:y_start+dy] = tiles[j][i]
 
-        save_results_to='/Users/s1955786/Desktop/penguins/'
+        save_results_to='/path/to/images'
         # print(np.max(new_image_arr))
         grid_im = Image.fromarray((new_image_arr).astype(np.uint8))
         grid_im.save(save_results_to+ f'{file.stem}_grid_thin.png', "JPEG")

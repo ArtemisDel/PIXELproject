@@ -54,6 +54,17 @@ coordinate_list=get_coordinates_list(16)
 
 #iterate over png files in your directory and check for black pixels in cutoff coordinates. 
 def check_for_cutoffs(path,coordinate_list):
+      '''
+    Takes the path to a folder directory, opens each image in the directory and searches for black pixels at the specified coordinate_list.
+    If black pixels are detected at the specified coordinates they are appended to a list corresponding to the image in a dictionary.
+    
+    Parameters:
+    - path: path to specified directory with images
+    - coordinate-list: a list of coordinates (list of tuples)
+
+    Returns:
+    - Dictionary where each image name corresponds to a list of coordinates where a black pixel was detected in the image.
+    '''
     directory=Path(path)
     cutoff_dict={}
     for file in directory.iterdir():
@@ -61,11 +72,9 @@ def check_for_cutoffs(path,coordinate_list):
             image=Image.open(file)
             thresh = 200
             fn = lambda x : 255 if x > thresh else 0
-            # TODO: check with Yi that is actually is doing what I think it's doing.
             image= image.convert('L').point(fn, mode='1') #convert to black& white
             # image.show()
             # print(f'an image:{list(image.getdata())}')
-            # ! might not be necessary for binary model visualisations
             black_coordinates = detect_black_pixels_in_range(image, coordinate_list)
             cutoff_dict[file.name]=black_coordinates
     return cutoff_dict
@@ -81,7 +90,7 @@ def check_for_cutoffs(path,coordinate_list):
 # print(type(black_coordinates))
 
 #get the dictionary of images and their cutoff points list
-cutoff_dict=check_for_cutoffs("/Users/s1955786/Desktop/penguins/",coordinate_list)
+cutoff_dict=check_for_cutoffs("path/to/visualisation/",coordinate_list)
 # print(f'this is the cutoff_dict:{cutoff_dict}')
 
 #convert dictionary to dataframes with pandas
@@ -96,7 +105,3 @@ df.to_csv('output.csv', index=True)
 #     print(f"Black pixels found at the following coordinates: {cutoff_dict}")
 # else:
 #     print("No black pixels found in the specified range.")
-
-# ? for some reason if I set the range to go all the way to 256 it says it's out of range??
-# ! Code here for x axis from 0 to 240 because the 256 cutoffs are counted in the next 0 coordinate (we don't want to double count)
-# ! Also if you count the last 256 point its always going to be a hit because of the black box. 

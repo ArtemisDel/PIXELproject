@@ -16,6 +16,7 @@ library(performance)
 library(car)
 library(glmmTMB)
 library(blmeco)
+library(fitdistrplus)
 
 
 #load data
@@ -269,17 +270,6 @@ ggplot(data_and_predicted, aes(x = size, y = total_cutoffs, group = font, colour
 
 dispersion_glmer(model_new)
 
-par(mfrow=c(2,2))
-qqnorm(resid(model_new), main="normal qq-plot, residuals")
-qqline(resid(model_new))
-
-qqnorm(ranef(model_new)$obs_index[,1])
-qqline(ranef(model_new)$obs_index[,1])
-
-plot(fitted(model_new), resid(model_new)) #residuals vs fitted
-abline(h=0)
-
-plot(hatvalues(model_new), residuals(model_new))
 
 # Extract influence measures
 infl <- influence(model_new)
@@ -309,4 +299,9 @@ abline(h = mean(sqrt(abs(resid(model_new)))), col = "red", lty = 2)
 #Residuals vs Leverage
 plot(hatvalues(model_new), residuals(model_new), main = "Residuals vs. Leverage")
 abline(h = 0, col = "red", lty = 2)
+
+
+#check for poisson distribution 
+plot(fitdist(results3$total_cutoffs,"pois"))
+
 
